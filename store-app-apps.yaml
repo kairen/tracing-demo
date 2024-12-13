@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: store-app
+  namespace: openshift-gitops
+spec:
+  destination:
+    name: ''
+    namespace: developer02
+    server: https://kubernetes.default.svc
+  source:
+    path: charts/store-app
+    repoURL: https://github.com/kairen/tracing-demo.gitops
+    targetRevision: main
+    helm:
+      releaseName: store-app
+      valueFiles:
+        - values.yaml
+  project: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

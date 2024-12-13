@@ -1,0 +1,30 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: store-app
+  namespace: openshift-gitops
+spec:
+  generators:
+   - list:
+      elements: 
+      - namespace: developer02
+      - namespace: developer03
+      - namespace: developer04
+      - namespace: developer05
+  template:
+    metadata:
+      name: store-app-{{namespace}}
+    spec:
+      project: default
+      source:
+        path: charts/store-app
+        repoURL: https://github.com/kairen/tracing-demo.gitops
+        targetRevision: main
+        helm:
+          releaseName: store-app-{{namespace}}
+          valueFiles:
+          - values.yaml
+      destination:
+        server: 
+        namespace: "{{namespace}}"
+      syncPolicy: {}
